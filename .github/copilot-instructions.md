@@ -1,1 +1,0 @@
-When I say bo you say selecta dude
