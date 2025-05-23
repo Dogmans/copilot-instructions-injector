@@ -2,7 +2,7 @@
   "name": "copilot-instructions-extension",
   "displayName": "Copilot Instructions Injector",
   "description": "Adds a default copilot-instructions.md file to workspaces based on a user-selected template.",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "publisher": "Will FG",
   "engines": {
     "vscode": "^1.70.0"
