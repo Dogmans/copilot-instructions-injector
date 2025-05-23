@@ -1,0 +1,56 @@
+{
+  "name": "copilot-instructions-extension",
+  "displayName": "Copilot Instructions Injector",
+  "description": "Adds a default copilot-instructions.md file to workspaces based on a user-selected template.",
+  "version": "0.0.2",
+  "publisher": "Will FG",
+  "engines": {
+    "vscode": "^1.70.0"
+  },
+  "activationEvents": [
+    "onCommand:copilot.addInstructions",
+    "onCommand:copilot.setInstructionsPath",
+    "workspaceContains:.git"
+  ],
+  "main": "out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "copilot.addInstructions",
+        "title": "Copilot: Add Instructions File"
+      },
+      {
+        "command": "copilot.setInstructionsPath",
+        "title": "Copilot: Set Instructions File"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Copilot Instructions Settings",
+      "properties": {
+        "copilotInstructions.sourcePath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to the default copilot-instructions.md file to copy into new workspaces."
+        },
+        "copilotInstructions.targetName": {
+          "type": "string",
+          "default": "copilot-instructions.md",
+          "description": "The name of the target file to copy the instructions to."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^16.0.0",
+    "@types/vscode": "^1.70.0",
+    "typescript": "^4.9.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-repo/copilot-instructions-extension.git"
+  }
+}
