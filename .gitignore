@@ -1,0 +1,11 @@
+# Ignore VSIX files
+*.vsix
+
+# Ignore package-lock.json
+package-lock.json
+
+# Ignore the out directory
+out/
+
+# Ignore node_modules directory
+node_modules/
