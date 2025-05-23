@@ -34,21 +34,59 @@ function activate(context) {
     if (workspaceFolders) {
         const rootPath = workspaceFolders[0].uri.fsPath;
         const targetName = config.get('copilotInstructions.targetName', 'copilot-instructions.md');
-        const targetPath = path.join(rootPath, targetName);
+        const targetFolder = path.join(rootPath, '.github');
+        const targetPath = path.join(targetFolder, targetName);
         const sourcePath = config.get('copilotInstructions.sourcePath');
+        // Ensure targetFolder exists
+        if (!fs.existsSync(targetFolder)) {
+            fs.mkdirSync(targetFolder, { recursive: true });
+        }
         // Check if the target file exists when opening the workspace
         if (!fs.existsSync(targetPath)) {
-            vscode.window.showInformationMessage(`${targetName} is missing. Do you want to create it?`, 'Yes', 'No').then(selection => {
-                if (selection === 'Yes' && sourcePath && fs.existsSync(sourcePath)) {
-                    try {
-                        fs.copyFileSync(sourcePath, targetPath);
-                        vscode.window.showInformationMessage(`${targetName} has been created.`);
+            if (!sourcePath) {
+                vscode.window.showInformationMessage('Source path is not set. Do you want to select a source file?', 'Yes', 'No').then(async (selection) => {
+                    if (selection === 'Yes') {
+                        const fileUri = await vscode.window.showOpenDialog({
+                            canSelectMany: false,
+                            filters: { Markdown: ['md'] },
+                            openLabel: 'Select copilot-instructions.md file'
+                        });
+                        if (fileUri && fileUri.length > 0) {
+                            await config.update('copilotInstructions.sourcePath', fileUri[0].fsPath, vscode.ConfigurationTarget.Global);
+                            vscode.window.showInformationMessage('Source path updated!');
+                            // Proceed to copy the file after setting the source path
+                            if (fs.existsSync(fileUri[0].fsPath)) {
+                                try {
+                                    fs.copyFileSync(fileUri[0].fsPath, targetPath);
+                                    vscode.window.showInformationMessage(`${targetName} has been created.`);
+                                }
+                                catch (err) {
+                                    vscode.window.showErrorMessage(`Failed to create ${targetName}: ${err}`);
+                                }
+                            }
+                            else {
+                                vscode.window.showErrorMessage('Selected source file does not exist.');
+                            }
+                        }
+                        else {
+                            vscode.window.showWarningMessage('No file selected.');
+                        }
                     }
-                    catch (err) {
-                        vscode.window.showErrorMessage(`Failed to create ${targetName}: ${err}`);
+                });
+            }
+            else {
+                vscode.window.showInformationMessage(`${targetName} is missing. Do you want to create it?`, 'Yes', 'No').then(selection => {
+                    if (selection === 'Yes' && fs.existsSync(sourcePath)) {
+                        try {
+                            fs.copyFileSync(sourcePath, targetPath);
+                            vscode.window.showInformationMessage(`${targetName} has been created.`);
+                        }
+                        catch (err) {
+                            vscode.window.showErrorMessage(`Failed to create ${targetName}: ${err}`);
+                        }
                     }
-                }
-            });
+                });
+            }
         }
         // Watch for changes in the source file
         if (sourcePath && fs.existsSync(sourcePath)) {
@@ -82,7 +120,8 @@ function activate(context) {
             return;
         }
         const targetName = config.get('copilotInstructions.targetName', 'copilot-instructions.md');
-        const targetPath = path.join(rootPath, targetName);
+        const targetFolder = path.join(rootPath, '.github');
+        const targetPath = path.join(targetFolder, targetName);
         if (fs.existsSync(targetPath)) {
             vscode.window.showInformationMessage(`${targetName} already exists.`);
             return;
@@ -123,7 +162,22 @@ function activate(context) {
             vscode.window.showInformationMessage('Copilot instructions file path updated!');
         }
     });
-    context.subscriptions.push(disposable, setPathCommand, browseSourcePathCommand);
+    const setSourcePathWithDialogCommand = vscode.commands.registerCommand('copilot.setSourcePathWithDialog', async () => {
+        const fileUri = await vscode.window.showOpenDialog({
+            canSelectMany: false,
+            filters: { Markdown: ['md'] },
+            openLabel: 'Select copilot-instructions.md file'
+        });
+        if (fileUri && fileUri.length > 0) {
+            const config = vscode.workspace.getConfiguration();
+            await config.update('copilotInstructions.sourcePath', fileUri[0].fsPath, vscode.ConfigurationTarget.Global);
+            vscode.window.showInformationMessage('Copilot instructions source path updated!');
+        }
+        else {
+            vscode.window.showWarningMessage('No file selected.');
+        }
+    });
+    context.subscriptions.push(disposable, setPathCommand, browseSourcePathCommand, setSourcePathWithDialogCommand);
 }
 exports.activate = activate;
 function deactivate() { }

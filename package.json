@@ -2,8 +2,8 @@
   "name": "copilot-instructions-extension",
   "displayName": "Copilot Instructions Injector",
   "description": "Adds a default copilot-instructions.md file to workspaces based on a user-selected template.",
-  "version": "0.0.4",
-  "publisher": "Will FG",
+  "version": "0.0.10",
+  "publisher": "Dogmans",
   "engines": {
     "vscode": "^1.70.0"
   },
@@ -35,7 +35,7 @@
         },
         "copilotInstructions.targetName": {
           "type": "string",
-          "default": "copilot-instructions.md",
+          "default": ".github/copilot-instructions.md",
           "description": "The name of the target file to copy the instructions to."
         }
       }

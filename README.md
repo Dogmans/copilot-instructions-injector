@@ -4,10 +4,14 @@
 The Copilot Instructions Injector is a Visual Studio Code extension designed to streamline the process of adding a default `copilot-instructions.md` file to your workspace. This file is based on a user-selected template and can be customized to suit your needs.
 
 ## Features
-- Automatically injects a `copilot-instructions.md` file into your workspace.
-- Allows users to browse and select a source template file.
-- Configurable target file name for flexibility.
-- Simple and intuitive commands to manage instructions.
+
+- **Automatic File Injection**: Automatically injects a `copilot-instructions.md` file into your workspace if it is missing.
+- **Source File Monitoring**: Watches the source file for changes and prompts to update the target file if the source file is newer.
+- **File Picker for Source Path**: Allows users to set the source file path using a file picker dialog, making configuration easier.
+- **Customizable Target Path**: Lets users specify the target file name and location within the workspace.
+- **Folder Creation**: Ensures the target folder (e.g., `.github`) exists before copying the file.
+- **User Prompts**: Prompts users to create or update the target file when necessary, ensuring a smooth workflow.
+- **Command Palette Integration**: Provides commands accessible via the Command Palette for managing the extension's functionality.
 
 ## Commands
 - **Copilot: Add Instructions File**
