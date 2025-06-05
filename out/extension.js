@@ -88,6 +88,24 @@ function activate(context) {
                 });
             }
         }
+        // Check if the source file is newer than the target file when opening the workspace
+        else if (sourcePath && fs.existsSync(sourcePath)) {
+            const sourceStat = fs.statSync(sourcePath);
+            const targetStat = fs.statSync(targetPath);
+            if (sourceStat.mtime > targetStat.mtime) {
+                vscode.window.showInformationMessage(`${targetName} is outdated. Do you want to replace it with the updated version?`, 'Yes', 'No').then(selection => {
+                    if (selection === 'Yes') {
+                        try {
+                            fs.copyFileSync(sourcePath, targetPath);
+                            vscode.window.showInformationMessage(`${targetName} has been updated.`);
+                        }
+                        catch (err) {
+                            vscode.window.showErrorMessage(`Failed to update ${targetName}: ${err}`);
+                        }
+                    }
+                });
+            }
+        }
         // Watch for changes in the source file
         if (sourcePath && fs.existsSync(sourcePath)) {
             const sourceWatcher = fs.watch(sourcePath, (eventType) => {

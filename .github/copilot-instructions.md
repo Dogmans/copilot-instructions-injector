@@ -1,0 +1,3 @@
+Keep a record of scripts that have been run in a file called scripts.md that describes how to run certain tasks in powershell.
+If a script has not run successfully and then you try again with correct syntax then record the correct syntax here.
+When creating a new project based on a framework, look up the quick start guide and other documentation to see whether there is a creation script rather than creating the files manually.
